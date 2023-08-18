@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const destinationSchema = mongoose.Schema({
 	_id: mongoose.Schema.Types.ObjectId,
 	name: {type: String, require: true},
-	planet: {type: mongoose.Schema.Types.ObjectId, ref: 'Post'},
+	planet: {type: mongoose.Schema.Types.ObjectId, ref: 'Planet'},
 	ratings: {type: Number},
 });
 
