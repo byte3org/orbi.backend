@@ -1,4 +1,5 @@
 const User = require("../models/users")
+const Booking = require("../models/bookings")
 
 const getUserByName = async (req, res) => {
     try {
@@ -12,4 +13,17 @@ const getUserByName = async (req, res) => {
     }
 }
 
-module.exports = { getUserByName }
+const getBookings = async (req, res) => {
+    try {
+        let isActive = req.query.active == "true"
+        let user = await User.find({ name: req.params.name }).exec()
+        let condition = { user }
+        if (isActive) condition.checkoutDate = { $gt: new Date() }
+        let bookings = await Booking.find(condition).populate('destination').exec()
+        res.json(bookings)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+module.exports = { getUserByName, getBookings }

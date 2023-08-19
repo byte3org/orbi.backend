@@ -1,4 +1,5 @@
 const Destination = require("../models/destinations");
+const Booking = require("../models/bookings");
 
 const getAllDestinations = async (req, res) => {
     try {
@@ -22,7 +23,25 @@ const getDestinationByName = async (req, res) => {
     }
 }
 
+const bookDestination = async (req, res) => {
+    try {
+        let user = req.body.user._id.toString()
+        let destination = (await Destination.findOne({ name: req.params.name }).exec())._id.toString()
+        let booking = new Booking({
+            user,
+            destination,
+            bookedDate: new Date(),
+            checkoutDate: new Date(req.body.checkoutDate)
+        })
+        await booking.save()
+        res.json({ message: "Booking successful" })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports = {
     getAllDestinations,
-    getDestinationByName
+    getDestinationByName,
+    bookDestination
 }

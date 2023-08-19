@@ -14,6 +14,8 @@ const planetRoutes = require('./api/routes/planets');
 const destinationRoutes = require('./api/routes/destinations');
 const userRoutes = require('./api/routes/users');
 
+const User = require('./api/models/users')
+
 // import routes
 
 app.use(morgan('dev'));
@@ -31,6 +33,25 @@ app.use((req, res, next) => {
 		return res.status(200).json({});
 	}
 	next();
+})
+
+// authorization
+app.use(async (req, res, next) => {
+	/*try {
+		const token = req.headers.authorization.split(" ")[1];
+		const decoded = jwt.verify(token, process.env.JWT_KEY);
+		req.userData = decoded;
+		next();
+	} catch (error) {
+		return res.status(401).json({
+			message: 'Auth failed'
+		});
+	}*/
+	let name = "Seniru"
+	let user = await User.findOne({ name }).exec()
+	//if (!user) return res.status(404).json({ 'message': 'User not found' })
+	req.body.user = user
+	next()
 })
 
 // routes
