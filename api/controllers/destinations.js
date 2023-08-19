@@ -1,6 +1,6 @@
 const Destination = require("../models/destinations");
 const Booking = require("../models/bookings");
-const User = require("../models/users");
+const Review = require("../models/reviews");
 
 const getAllDestinations = async (req, res) => {
     try {
@@ -77,6 +77,34 @@ const getTrendingDestinations = async (req, res) => {
     }
 }
 
+const addReview = async (req, res) => {
+    try {
+        let user = req.body.user._id.toString()
+        let destination = (await Destination.findOne({ name: req.params.name }).exec())._id.toString()
+        let review = new Review({
+            user,
+            destination,
+            date: new Date(),
+            comment: req.body.comment
+        })
+        await review.save()
+        res.json({ message: "Review added" })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const getReviews = async (req, res) => {
+    try {
+        let name = req.params.name.toLowerCase();
+        let destination = await Destination.findOne({ name }).exec()
+        let reviews = await Review.find({ destination }).populate("user").exec()
+        res.json(reviews)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const bookDestination = async (req, res) => {
     try {
         let user = req.body.user._id.toString()
@@ -112,5 +140,7 @@ module.exports = {
     getDestinationByName,
     getTrendingDestinations,
     bookDestination,
-    favouriteDestination
+    favouriteDestination,
+    addReview,
+    getReviews
 }
