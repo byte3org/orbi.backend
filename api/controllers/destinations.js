@@ -1,5 +1,6 @@
 const Destination = require("../models/destinations");
 const Booking = require("../models/bookings");
+const User = require("../models/users");
 
 const getAllDestinations = async (req, res) => {
     try {
@@ -40,8 +41,22 @@ const bookDestination = async (req, res) => {
     }
 }
 
+const favouriteDestination = async (req, res) => {
+    try {
+        let user = req.body.user
+        let destination = (await Destination.findOne({ name: req.params.name }).exec())
+        if (!user.favourites) user.favourites = []
+        user.favourites.push(destination)
+        await user.save()
+        res.json({ message: "Destination added to favourites" })
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports = {
     getAllDestinations,
     getDestinationByName,
-    bookDestination
+    bookDestination,
+    favouriteDestination
 }

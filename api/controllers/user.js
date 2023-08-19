@@ -26,4 +26,15 @@ const getBookings = async (req, res) => {
     }
 }
 
-module.exports = { getUserByName, getBookings }
+const getFavourites = async (req, res) => {
+    try {
+        let user = await User.find({ name: req.params.name }).exec()
+        let favourites = user.favourites || []
+        console.log("favourites", favourites)
+        res.json(favourites)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+module.exports = { getUserByName, getBookings, getFavourites }
