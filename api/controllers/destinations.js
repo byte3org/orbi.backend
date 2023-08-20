@@ -4,7 +4,7 @@ const Review = require("../models/reviews");
 
 const getAllDestinations = async (req, res) => {
     try {
-        const destinations = await Destination.find();
+        const destinations = await Destination.find().populate("planet").exec();
         res.json(destinations);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,7 +14,7 @@ const getAllDestinations = async (req, res) => {
 const getDestinationByName = async (req, res) => {
     try {
         let name = req.params.name.toLowerCase();
-        const destination = await Destination.findOne({ id: name }).exec();
+        const destination = await Destination.findOne({ id: name }).populate("planet").exec();
         if (!destination) return res.status(404).json({ message: "Destination not found" });
         res.json(destination);
     } catch (error) {
