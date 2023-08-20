@@ -5,7 +5,7 @@ const reviewSchema = mongoose.Schema({
 	destination: {type: mongoose.Schema.Types.ObjectId, ref: "Destination", require: true},
 	date: {type: Date, require: true},
 	comment: {type: String, require: false},
-	stars: {type: Number, require: true},
+	stars: {type: Number, require: true, min: 0, max: 5},
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
