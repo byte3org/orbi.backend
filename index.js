@@ -13,6 +13,7 @@ const mongo = process.env.MONGO
 const planetRoutes = require('./api/routes/planets');
 const destinationRoutes = require('./api/routes/destinations');
 const userRoutes = require('./api/routes/users');
+const transportationRoutes = require('./api/routes/transportation');
 
 const User = require('./api/models/users')
 
@@ -58,6 +59,7 @@ app.use(async (req, res, next) => {
 app.use('/planets', planetRoutes);
 app.use('/destinations', destinationRoutes);
 app.use('/user', userRoutes);
+app.use('/transportation', transportationRoutes)
 
 app.use((req, res, next) => {
 	const error = new Error('NotFound');
