@@ -25,7 +25,10 @@ const publicTransportationSchema = extendSchema(transportationSchema, {
 
 const publicTransportation = mongoose.model("PublicTransportation", publicTransportationSchema)
 
+//const trasnpo = mongoose.model("Transportion", transportationSchema)
+
 module.exports = {
+    //transportationSchema: transportationSchema,
     publicTransportation: publicTransportation,
     privateTransportation: privateTransportation,
 }
