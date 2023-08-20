@@ -4,7 +4,7 @@ const Review = require("../models/reviews");
 
 const getAllDestinations = async (req, res) => {
     try {
-        const destinations = await Destination.find();
+        const destinations = await Destination.find().populate("planet").exec();
         res.json(destinations);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -14,7 +14,7 @@ const getAllDestinations = async (req, res) => {
 const getDestinationByName = async (req, res) => {
     try {
         let name = req.params.name.toLowerCase();
-        const destination = await Destination.findOne({ name }).exec();
+        const destination = await Destination.findOne({ id: name }).populate("planet").exec();
         if (!destination) return res.status(404).json({ message: "Destination not found" });
         res.json(destination);
     } catch (error) {
@@ -68,7 +68,7 @@ const getTrendingDestinations = async (req, res) => {
             }
         })
 
-        let trending = (await Destination.find()).sort((e1, e2) => {
+        let trending = (await Destination.find().populate("planet")).sort((e1, e2) => {
             return (scoring[e2._id] || 0) - (scoring[e1._id] || 0)
         })
         res.json(trending)
@@ -80,7 +80,7 @@ const getTrendingDestinations = async (req, res) => {
 const addReview = async (req, res) => {
     try {
         let user = req.body.user._id.toString()
-        let destination = (await Destination.findOne({ name: req.params.name }).exec())._id.toString()
+        let destination = (await Destination.findOne({ id: req.params.name }).exec())._id.toString()
         let review = new Review({
             user,
             destination,
@@ -108,7 +108,7 @@ const getReviews = async (req, res) => {
 const bookDestination = async (req, res) => {
     try {
         let user = req.body.user._id.toString()
-        let destination = (await Destination.findOne({ name: req.params.name }).exec())._id.toString()
+        let destination = (await Destination.findOne({ id: req.params.name }).exec())._id.toString()
         let booking = new Booking({
             user,
             destination,
@@ -125,7 +125,7 @@ const bookDestination = async (req, res) => {
 const favouriteDestination = async (req, res) => {
     try {
         let user = req.body.user
-        let destination = (await Destination.findOne({ name: req.params.name }).exec())
+        let destination = (await Destination.findOne({ id: req.params.name }).exec())
         if (!user.favourites) user.favourites = []
         user.favourites.push(destination)
         await user.save()
